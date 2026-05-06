@@ -1,0 +1,130 @@
+---
+title: "CUSTOS API – Federal government costs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{CUSTOS API – Federal government costs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+## About
+
+The CUSTOS API (`https://apidatalake.tesouro.gov.br/docs/custos/`) provides
+cost data from the Federal Government Cost Portal (Portal de Custos do Governo
+Federal). It breaks down costs into six categories: active staff, retired staff,
+pensioners, depreciation, transfers, and other costs.
+
+All parameters in this API are **optional** — you can call any function without
+arguments to retrieve the full dataset.
+
+## Performance warning
+
+> **The CUSTOS API is slow.** Its server default is only 250 rows per page;
+> the package raises this to 500 by default (lowered from 1000 in 0.2.1
+> after the upstream load balancer started cutting broader queries).
+> Even with 500-row pages, unfiltered queries routinely hit HTTP 504
+> timeouts. **Always filter your queries** by at least:
+>
+> - `year` **and** `month` — year-only queries are the single most common
+>   cause of 504s; always pin a single month for production work
+> - `org_level1` + `org_level2` (reduce to a specific organization)
+> - `legal_nature` (reduce to a legal nature category)
+> - `max_rows` (set a hard cap for testing)
+>
+> The package retries automatically on 504s (up to 5 attempts with
+> progressive backoff). When pagination fails after the first page, the
+> rows already fetched are **not discarded** — you receive a partial
+> tibble with `attr(result, "partial") = TRUE` and
+> `attr(result, "last_page_error")` describing the failure. Always check
+> these attributes when working with broad queries.
+
+## Available functions
+
+| Portuguese | English | Description |
+|:---|:---|:---|
+| `get_custos_pessoal_ativo()` | `get_costs_active_staff()` | Active staff costs |
+| `get_custos_pessoal_inativo()` | `get_costs_retired_staff()` | Retired staff costs |
+| `get_custos_pensionistas()` | `get_costs_pensioners()` | Pensioner costs |
+| `get_custos_demais()` | `get_costs_other()` | Other costs |
+| `get_custos_depreciacao()` | `get_costs_depreciation()` | Depreciation costs |
+| `get_custos_transferencias()` | `get_costs_transfers()` | Transfer costs |
+
+## Parameter mapping
+
+All six functions share the same optional filters:
+
+| Portuguese (API) | English | Description |
+|:---|:---|:---|
+| `ano` | `year` | Year of the record |
+| `mes` | `month` | Month (1-12) |
+| `natureza_juridica` | `legal_nature` | Legal nature: 1=Public Company, 2=Foundation, 3=Direct Admin, 4=Autarchy, 6=Mixed Economy |
+| `organizacao_n1` | `org_level1` | Top-level SIORG code (Ministry). See `get_siorg_orgaos()`. Auto-padded. |
+| `organizacao_n2` | `org_level2` | Second-level SIORG code. See `get_siorg_estrutura()`. Auto-padded. |
+| `organizacao_n3` | `org_level3` | Third-level SIORG code. See `get_siorg_estrutura()`. Auto-padded. |
+
+SIORG codes are automatically zero-padded: you can pass `244`, `"244"`,
+or `"000244"` — all produce the same query.
+
+## Examples
+
+```{r}
+library(tesouror)
+library(dplyr)
+
+# Step 1: Look up SIORG codes for the organization you want
+orgaos <- get_siorg_organizations(power_code = 1, sphere_code = 1)
+mec <- orgaos |> filter(sigla == "MEC")          # code 244
+inep <- orgaos |> filter(sigla == "INEP")         # code 249
+
+# Step 2: Query CUSTOS with org AND month filters (year-only is unsafe!)
+# Active staff costs for INEP, June 2023
+ativos_inep <- get_costs_active_staff(
+  year = 2023, month = 6,
+  org_level1 = 244,     # MEC — auto-padded to "000244"
+  org_level2 = 249      # INEP — auto-padded to "000249"
+)
+
+# Always check whether pagination completed; on 504 mid-stream the
+# package returns a partial tibble rather than dropping the data.
+if (isTRUE(attr(ativos_inep, "partial"))) {
+  message("Partial result — last page failed: ",
+          attr(ativos_inep, "last_page_error"))
+}
+
+# Pensioner costs for INEP, June 2023 only
+pensionistas_inep <- get_costs_pensioners(
+  year = 2023, month = 6,
+  org_level1 = 244,
+  org_level2 = 249
+)
+
+# Quick test: just grab the first 100 rows
+sample <- get_costs_active_staff(
+  year = 2023, month = 6,
+  legal_nature = 3,
+  max_rows = 100
+)
+```
+
+### Response columns
+
+The CUSTOS API returns organization hierarchy down to 6 levels:
+
+| Column | Description |
+|:---|:---|
+| `co_organizacao_n0` / `ds_organizacao_n0` | Top authority (e.g., Presidência) |
+| `co_organizacao_n1` / `ds_organizacao_n1` | Ministry level |
+| `co_organizacao_n2` / `ds_organizacao_n2` | Entity/secretariat |
+| `co_organizacao_n3` / `ds_organizacao_n3` | Department |
+| `co_organizacao_n4` to `n6` | Deeper sub-units (`"-9"` = not applicable) |
+| `an_lanc` / `me_lanc` | Year and month of the accounting entry |
+| `ds_area_atuacao` | Area: `"FINALISTICA"` or `"SUPORTE"` |
+| `ds_escolaridade` | Education level of the staff member |
+| `ds_faixa_etaria` | Age range |
+| `in_sexo` | Sex: `"F"` or `"M"` |
+| `in_forca_trabalho` | Workforce count |
+| `va_custo_de_pessoal` | Cost value (R$) |

@@ -1,0 +1,233 @@
+---
+title: "Getting started with tesouror"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started with tesouror}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+## Overview
+
+The `tesouror` package provides a unified R interface to the Brazilian National
+Treasury (Tesouro Nacional) open data APIs. It covers six major data sources:
+
+| API | Data | Prefix |
+|:---|:---|:---|
+| **SICONFI** | Fiscal reports (RREO, RGF, DCA, MSC), entities | `get_` |
+| **CUSTOS** | Federal government costs | `get_custos_` / `get_costs_` |
+| **SADIPEM** | Public debt & credit operations | `get_pvl` / `get_opc_` / `get_res_` |
+| **SIORG** | Federal organizational structure (dictionary for CUSTOS) | `get_siorg_` |
+| **Transferências** | Constitutional transfers to states/municipalities | `get_tc_` |
+| **SIOPE** | Education spending (FNDE/MEC) | `get_siope_` |
+
+All functions return tidy tibbles, use in-memory caching, and have both
+Portuguese-named (matching the API) and English-named versions.
+
+## Installation
+
+```{r}
+# From CRAN (when available):
+install.packages("tesouror")
+
+# Development version from GitHub:
+# remotes::install_github("StrategicProjects/tesouror")
+```
+
+## Quick examples
+
+```{r}
+library(tesouror)
+
+# List all government entities
+entes <- get_entes()
+
+# Get RREO data for Tocantins (IBGE code 17)
+rreo <- get_rreo(
+  an_exercicio = 2022, nr_periodo = 6,
+  co_tipo_demonstrativo = "RREO",
+  no_anexo = "RREO-Anexo 01",
+  co_esfera = "E", id_ente = 17
+)
+
+# Same query using English aliases
+rreo <- get_budget_report(
+  fiscal_year = 2022, period = 6,
+  report_type = "RREO",
+  appendix = "RREO-Anexo 01",
+  sphere = "E", entity_id = 17
+)
+
+# Federal government costs (always filter by org to avoid slow queries!)
+custos <- get_custos_pessoal_ativo(
+  ano = 2023, mes = 6,
+  organizacao_n1 = 244,  # MEC (auto-padded)
+  organizacao_n2 = 249   # INEP
+)
+
+# Constitutional transfers (codes are Treasury-internal, NOT IBGE!)
+estados <- get_tc_estados()
+pe_code <- estados$codigo[estados$nome == "Pernambuco"]
+tc <- get_tc_por_estados(p_estado = pe_code, p_ano = 2023)
+
+# Education spending data from SIOPE
+indicadores <- get_siope_indicators(year = 2023, period = 6, state = "PE")
+```
+
+## Caching
+
+All functions cache responses in-memory during your R session. This means
+repeated calls with the same parameters are instantaneous. To clear the cache:
+
+```{r}
+tesouror_clear_cache()
+```
+
+## Bilingual interface
+
+Every function has two versions. The Portuguese version uses the exact API
+parameter names, while the English version uses descriptive English names:
+ 
+```{r}
+# Portuguese (API-native)
+get_dca(an_exercicio = 2022, id_ente = 17)
+
+# English
+get_annual_accounts(fiscal_year = 2022, entity_id = 17)
+```
+
+Both call the same endpoint and return the same data. See the
+`vignette("siconfi")`, `vignette("custos")`, `vignette("sadipem")`,
+`vignette("siorg")`, `vignette("transferencias")`, and
+`vignette("siope")` articles for API-specific details.
+
+## Debugging with `verbose`
+
+Every function has a `verbose` parameter that prints the full API URL
+being called. This is useful for debugging or testing in a browser/curl:
+
+```{r}
+# Per call:
+get_costs_active_staff(year = 2023, month = 6, org_level1 = 244, verbose = TRUE)
+#> ℹ API call: https://apidatalake.tesouro.gov.br/ords/custos/tt/pessoal_ativo?ano=2023&mes=6&organizacao_n1=000244&limit=1000
+
+# Or globally for the session:
+options(tesouror.verbose = TRUE)
+get_entes()  # will print the URL
+options(tesouror.verbose = FALSE)  # turn off
+```
+
+## Controlling page size
+
+ORDS-based APIs (SICONFI, CUSTOS, SADIPEM) return paginated results.
+The `page_size` parameter controls how many rows per page:
+
+```{r}
+# CUSTOS defaults to 1000 rows/page (server default is only 250)
+custos <- get_costs_active_staff(
+  year = 2023, org_level1 = 244, org_level2 = 249
+)
+
+# Lower for quick tests:
+custos_sample <- get_costs_active_staff(
+  year = 2023, org_level1 = 244, org_level2 = 249,
+  page_size = 100, max_rows = 200
+)
+
+# SICONFI/SADIPEM default to server's 5000 rows/page (fast)
+entes <- get_entes()
+```
+
+## Column names
+
+All API responses are cleaned with `janitor::clean_names()` to ensure
+consistent snake_case column names (e.g., `CO_IBGE` becomes `co_ibge`).
+
+## API Reference
+
+### SICONFI — Fiscal Reports
+
+Base URL: `https://apidatalake.tesouro.gov.br/ords/siconfi/tt/`
+
+Fiscal reports (RREO, RGF, DCA), accounting matrices (MSC), and entity
+registry. Maintained by STN. ORDS pagination (`hasMore`/`offset`) with
+server default of 5,000 rows/page. 18 functions (9 PT + 9 EN).
+
+### CUSTOS — Federal Government Costs
+
+Base URL: `https://apidatalake.tesouro.gov.br/ords/custos/tt/`
+
+Cost data for active/retired staff, pensioners, depreciation, transfers,
+and other costs. ORDS pagination with default of **1,000 rows/page**
+(server default of 250 is too slow; 5,000 causes timeouts). SIORG codes
+are auto-padded (`244` → `"000244"`). 12 functions (6 PT + 6 EN).
+
+> **Warning**: Always filter by organization level (`organizacao_n1` +
+> `organizacao_n2`) to avoid downloading hundreds of thousands of rows.
+
+### SADIPEM — Public Debt
+
+Base URL: `https://apidatalake.tesouro.gov.br/ords/sadipem/tt/`
+
+PVL (public debt verification letters), credit operations, payment
+schedules, exchange rates, and debt capacity. ORDS pagination with
+server default of 5,000 rows/page. 14 functions (7 PT + 7 EN).
+
+### Transferências Constitucionais
+
+Base URL: `https://apiapex.tesouro.gov.br/aria/v1/transferencias_constitucionais/custom/`
+
+Constitutional transfers (FPE, FPM, FUNDEB, etc.). No pagination (single
+response). Accepts vectors (`c(1,2)`) or colon-separated strings
+(`"1:2"`). Uses **Treasury-internal codes**, not IBGE. 14 functions
+(7 PT + 7 EN).
+
+### SIORG — Organizational Structure
+
+Base URL: `https://estruturaorganizacional.dados.gov.br/`
+
+Federal organizational structure: ministries, autarchies, foundations.
+Used as a dictionary for CUSTOS organization codes. No pagination.
+6 functions (3 PT + 3 EN).
+
+### SIOPE — Education Spending
+
+Base URL: `https://www.fnde.gov.br/olinda-ide/servico/DADOS_ABERTOS_SIOPE/versao/v1/odata/`
+
+Education spending data from FNDE/MEC: revenues, expenses, indicators,
+staff compensation. OData pagination (`$top`/`$skip`) with default of
+**1,000 rows/page**. Supports server-side `filter` (OData `$filter`),
+`orderby`, and `select`. 16 functions (8 PT + 8 EN).
+
+> **Tip**: Use `filter = "NOM_MUNI eq 'Recife'"` to narrow results on
+> the server. Column names in `filter`/`select`/`orderby` must use the
+> original API names (uppercase). Run `toupper(names(result))` on a
+> `max_rows = 1` query to discover them.
+
+### Common features (all APIs)
+
+All 80 functions share these features:
+
+- **Retries**: 5 attempts with progressive backoff (3s, 6s, 9s, 12s,
+  15s) on HTTP 500/502/503/504/429 and connection failures. HTTP
+  400/404 are not retried.
+- **Caching**: In-memory per session. Clear with
+  `tesouror_clear_cache()`.
+- **`verbose` mode**: Per call (`verbose = TRUE`) or globally
+  (`options(tesouror.verbose = TRUE)`).
+- **`max_rows`**: Cap the number of rows returned (adjusts `limit`
+  or `$top` automatically).
+- **Column cleaning**: `janitor::clean_names()` applied to all
+  responses.
+- **Bilingual**: Portuguese (API-native) and English aliases for every
+  function.
+- **Error messages**: Friendly, actionable messages with URL and hints.
+  HTTP 400 errors suggest checking column names in `filter`/`select`.

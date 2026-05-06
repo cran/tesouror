@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>SIOPE API – Education spending data</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">SIOPE API – Education spending data</h1>
+
+
+
+<div id="about" class="section level2">
+<h2>About</h2>
+<p>SIOPE (Sistema de Informações sobre Orçamentos Públicos em Educação)
+provides education spending data from states and municipalities. The
+system is maintained by FNDE (Fundo Nacional de Desenvolvimento da
+Educação) and the API uses an OData-style interface hosted at
+<code>https://www.fnde.gov.br/olinda-ide/servico/DADOS_ABERTOS_SIOPE/</code>.</p>
+<p>Data covers revenues, expenses, indicators, official contacts, and
+staff compensation related to public education spending.</p>
+</div>
+<div id="available-functions" class="section level2">
+<h2>Available functions</h2>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Portuguese</th>
+<th align="left">English</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>get_siope_dados_gerais()</code></td>
+<td align="left"><code>get_siope_general_data()</code></td>
+<td align="left">General data (demographics, GDP, totals)</td>
+</tr>
+<tr class="even">
+<td align="left"><code>get_siope_responsaveis()</code></td>
+<td align="left"><code>get_siope_officials()</code></td>
+<td align="left">Officials responsible for declarations</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>get_siope_despesas()</code></td>
+<td align="left"><code>get_siope_expenses()</code></td>
+<td align="left">Education expenses</td>
+</tr>
+<tr class="even">
+<td align="left"><code>get_siope_despesas_funcao()</code></td>
+<td align="left"><code>get_siope_expenses_by_function()</code></td>
+<td align="left">Expenses by government function</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>get_siope_indicadores()</code></td>
+<td align="left"><code>get_siope_indicators()</code></td>
+<td align="left">Education spending indicators</td>
+</tr>
+<tr class="even">
+<td align="left"><code>get_siope_info_complementares()</code></td>
+<td align="left"><code>get_siope_supplementary()</code></td>
+<td align="left">Supplementary information</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>get_siope_receitas()</code></td>
+<td align="left"><code>get_siope_revenues()</code></td>
+<td align="left">Education revenues</td>
+</tr>
+<tr class="even">
+<td align="left"><code>get_siope_remuneracao()</code></td>
+<td align="left"><code>get_siope_compensation()</code></td>
+<td align="left">Staff compensation</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="required-parameters" class="section level2">
+<h2>Required parameters</h2>
+<p>All functions share three required parameters:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Portuguese</th>
+<th align="left">English</th>
+<th align="left">Description</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>ano</code></td>
+<td align="left"><code>year</code></td>
+<td align="left">Year of the data</td>
+<td align="left"><code>2023</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>periodo</code></td>
+<td align="left"><code>period</code></td>
+<td align="left">Bimester (1-6)</td>
+<td align="left"><code>6</code> (Nov-Dec)</td>
+</tr>
+<tr class="odd">
+<td align="left"><code>uf</code></td>
+<td align="left"><code>state</code></td>
+<td align="left">State abbreviation</td>
+<td align="left"><code>&quot;PE&quot;</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exception</strong>: <code>get_siope_remuneracao()</code> /
+<code>get_siope_compensation()</code> has a 4th required parameter:
+<code>mes</code> / <code>month</code> (1-12).</p>
+<div id="period-mapping" class="section level3">
+<h3>Period mapping</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Period</th>
+<th align="left">Months</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">January – February</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">March – April</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">May – June</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">July – August</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">September – October</td>
+</tr>
+<tr class="even">
+<td align="left">6</td>
+<td align="left">November – December</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="performance-tip-use-filter-to-reduce-downloads" class="section level2">
+<h2>Performance tip: use <code>filter</code> to reduce downloads</h2>
+<blockquote>
+<p><strong>The SIOPE API returns all municipalities for a given
+state.</strong> A single call for São Paulo (<code>state = &quot;SP&quot;</code>)
+returns 645+ rows. Use the <code>filter</code> parameter to apply
+<strong>server-side filtering</strong> and download only the data you
+need. This is much faster than downloading everything and filtering
+locally with <code>dplyr::filter()</code>.</p>
+</blockquote>
+<div id="filtering-by-municipality" class="section level3">
+<h3>Filtering by municipality</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># SLOW: downloads all 185 municipalities, then filters locally</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>dados_pe <span class="ot">&lt;-</span> <span class="fu">get_siope_general_data</span>(<span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>recife <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">filter</span>(dados_pe, nom_muni <span class="sc">==</span> <span class="st">&quot;Recife&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># FAST: server returns only Recife&#39;s data</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>recife <span class="ot">&lt;-</span> <span class="fu">get_siope_general_data</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="at">filter =</span> <span class="st">&quot;NOM_MUNI eq &#39;Recife&#39;&quot;</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Filter by IBGE code</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>recife <span class="ot">&lt;-</span> <span class="fu">get_siope_general_data</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>  <span class="at">filter =</span> <span class="st">&quot;COD_MUNI eq 261160&quot;</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="odata-filter-syntax" class="section level3">
+<h3>OData filter syntax</h3>
+<p>The <code>filter</code> parameter uses OData v4 syntax. Column names
+must use the <strong>original API names</strong> (uppercase), not the
+cleaned snake_case names. Use <code>verbose = TRUE</code> on a
+<code>max_rows = 1</code> call to inspect column names.</p>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Operator</th>
+<th align="left">Meaning</th>
+<th align="left">Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>eq</code></td>
+<td align="left">Equals</td>
+<td align="left"><code>&quot;NOM_MUNI eq &#39;Recife&#39;&quot;</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>ne</code></td>
+<td align="left">Not equals</td>
+<td align="left"><code>&quot;TIPO ne &#39;Estado&#39;&quot;</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>gt</code>, <code>ge</code></td>
+<td align="left">Greater (or equal)</td>
+<td align="left"><code>&quot;NUM_POPU gt 100000&quot;</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>lt</code>, <code>le</code></td>
+<td align="left">Less (or equal)</td>
+<td align="left"><code>&quot;NUM_POPU le 50000&quot;</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>and</code></td>
+<td align="left">Logical AND</td>
+<td align="left"><code>&quot;NOM_MUNI eq &#39;Recife&#39; and TIPO eq &#39;Município&#39;&quot;</code></td>
+</tr>
+<tr class="even">
+<td align="left"><code>or</code></td>
+<td align="left">Logical OR</td>
+<td align="left"><code>&quot;NOM_MUNI eq &#39;Recife&#39; or NOM_MUNI eq &#39;Olinda&#39;&quot;</code></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>contains()</code></td>
+<td align="left">Substring match</td>
+<td align="left"><code>&quot;contains(NOM_MUNI, &#39;Porto&#39;)&quot;</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="selecting-specific-columns" class="section level3">
+<h3>Selecting specific columns</h3>
+<p>Use <code>select</code> to request only the columns you need (reduces
+payload):</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Only municipality name and declared value</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>resumo <span class="ot">&lt;-</span> <span class="fu">get_siope_expenses</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>  <span class="at">select =</span> <span class="fu">c</span>(<span class="st">&quot;NOM_MUNI&quot;</span>, <span class="st">&quot;NOM_ITEM&quot;</span>, <span class="st">&quot;VAL_DECL&quot;</span>),</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>  <span class="at">filter =</span> <span class="st">&quot;NOM_MUNI eq &#39;Recife&#39;&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>)</span></code></pre></div>
+<blockquote>
+<p><strong>Column names in filter/select/orderby must use the original
+API names (UPPERCASE), not the cleaned snake_case names.</strong> To
+discover valid column names, run a quick test:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>sample <span class="ot">&lt;-</span> <span class="fu">get_siope_expenses</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>, <span class="at">max_rows =</span> <span class="dv">1</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co"># snake_case names → convert back to UPPER for filter/select</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">toupper</span>(<span class="fu">names</span>(sample))</span></code></pre></div>
+</blockquote>
+</div>
+<div id="sorting-results" class="section level3">
+<h3>Sorting results</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Sort by population descending</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>dados <span class="ot">&lt;-</span> <span class="fu">get_siope_general_data</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="at">orderby =</span> <span class="st">&quot;NUM_POPU desc&quot;</span>, <span class="at">max_rows =</span> <span class="dv">10</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="compensation-data-with-filters" class="section level3">
+<h3>Compensation data with filters</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Staff compensation for Agrestina, only &quot;Efetivo&quot; professionals</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>rem <span class="ot">&lt;-</span> <span class="fu">get_siope_compensation</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2024</span>, <span class="at">period =</span> <span class="dv">1</span>, <span class="at">month =</span> <span class="dv">1</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">filter =</span> <span class="st">&quot;NOM_MUNI eq &#39;Agrestina&#39; and DS_SITUACAO_PROFISSIONAL eq &#39;Efetivo&#39;&quot;</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+</div>
+<div id="examples" class="section level2">
+<h2>Examples</h2>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">library</span>(tesouror)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co"># General data for all municipalities in Pernambuco, last bimester 2023</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>dados_pe <span class="ot">&lt;-</span> <span class="fu">get_siope_general_data</span>(<span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co"># Education revenues for São Paulo</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>receitas_sp <span class="ot">&lt;-</span> <span class="fu">get_siope_revenues</span>(<span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;SP&quot;</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co"># Education indicators for Minas Gerais</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>indicadores_mg <span class="ot">&lt;-</span> <span class="fu">get_siope_indicators</span>(<span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;MG&quot;</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co"># Expenses by function for Rio de Janeiro</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>desp_func_rj <span class="ot">&lt;-</span> <span class="fu">get_siope_expenses_by_function</span>(</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;RJ&quot;</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>)</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co"># Staff compensation for December 2023 in Bahia</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>remuneracao_ba <span class="ot">&lt;-</span> <span class="fu">get_siope_compensation</span>(</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">month =</span> <span class="dv">12</span>, <span class="at">state =</span> <span class="st">&quot;BA&quot;</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>)</span></code></pre></div>
+<div id="quick-test-with-max_rows" class="section level3">
+<h3>Quick test with max_rows</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Grab just 10 rows to inspect the structure</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>sample <span class="ot">&lt;-</span> <span class="fu">get_siope_general_data</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>, <span class="at">max_rows =</span> <span class="dv">10</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="fu">glimpse</span>(sample)</span></code></pre></div>
+</div>
+<div id="combining-states" class="section level3">
+<h3>Combining states</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Fetch multiple states and combine</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>nordeste <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;AL&quot;</span>, <span class="st">&quot;BA&quot;</span>, <span class="st">&quot;CE&quot;</span>, <span class="st">&quot;MA&quot;</span>, <span class="st">&quot;PB&quot;</span>, <span class="st">&quot;PE&quot;</span>, <span class="st">&quot;PI&quot;</span>, <span class="st">&quot;RN&quot;</span>, <span class="st">&quot;SE&quot;</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>indicadores_ne <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(nordeste, <span class="cf">function</span>(uf) {</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="fu">get_siope_indicators</span>(<span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> uf)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+</div>
+<div id="how-the-odata-url-works" class="section level2">
+<h2>How the OData URL works</h2>
+<p>The SIOPE API uses an OData-style URL pattern different from the
+other APIs in this package. Internally, the package builds URLs
+like:</p>
+<pre><code>{base}/Dados_Gerais_Siope(Ano_Consulta=@Ano_Consulta,Num_Peri=@Num_Peri,Sig_UF=@Sig_UF)
+  ?@Ano_Consulta=2023&amp;@Num_Peri=6&amp;@Sig_UF=&#39;PE&#39;&amp;$format=json</code></pre>
+<p>where <code>{base}</code> is the FNDE/MEC SIOPE OData root, available
+from <code>tesouror:::siope_base_url()</code>.</p>
+<p>You don’t need to worry about this — just pass the parameters and the
+package handles the rest. Use <code>verbose = TRUE</code> to see the
+full URL:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">get_siope_general_data</span>(<span class="at">year =</span> <span class="dv">2023</span>, <span class="at">period =</span> <span class="dv">6</span>, <span class="at">state =</span> <span class="st">&quot;PE&quot;</span>, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; ℹ API call: https://www.fnde.gov.br/olinda-ide/servico/...</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

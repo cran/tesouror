@@ -1,0 +1,217 @@
+---
+title: "SIOPE API – Education spending data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SIOPE API – Education spending data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+## About
+
+SIOPE (Sistema de Informações sobre Orçamentos Públicos em Educação)
+provides education spending data from states and municipalities. The
+system is maintained by FNDE (Fundo Nacional de Desenvolvimento da
+Educação) and the API uses an OData-style interface hosted at
+`https://www.fnde.gov.br/olinda-ide/servico/DADOS_ABERTOS_SIOPE/`.
+
+Data covers revenues, expenses, indicators, official contacts, and
+staff compensation related to public education spending.
+
+## Available functions
+
+| Portuguese | English | Description |
+|:---|:---|:---|
+| `get_siope_dados_gerais()` | `get_siope_general_data()` | General data (demographics, GDP, totals) |
+| `get_siope_responsaveis()` | `get_siope_officials()` | Officials responsible for declarations |
+| `get_siope_despesas()` | `get_siope_expenses()` | Education expenses |
+| `get_siope_despesas_funcao()` | `get_siope_expenses_by_function()` | Expenses by government function |
+| `get_siope_indicadores()` | `get_siope_indicators()` | Education spending indicators |
+| `get_siope_info_complementares()` | `get_siope_supplementary()` | Supplementary information |
+| `get_siope_receitas()` | `get_siope_revenues()` | Education revenues |
+| `get_siope_remuneracao()` | `get_siope_compensation()` | Staff compensation |
+
+## Required parameters
+
+All functions share three required parameters:
+
+| Portuguese | English | Description | Example |
+|:---|:---|:---|:---|
+| `ano` | `year` | Year of the data | `2023` |
+| `periodo` | `period` | Bimester (1-6) | `6` (Nov-Dec) |
+| `uf` | `state` | State abbreviation | `"PE"` |
+
+**Exception**: `get_siope_remuneracao()` / `get_siope_compensation()`
+has a 4th required parameter: `mes` / `month` (1-12).
+
+### Period mapping
+
+| Period | Months |
+|:---|:---|
+| 1 | January – February |
+| 2 | March – April |
+| 3 | May – June |
+| 4 | July – August |
+| 5 | September – October |
+| 6 | November – December |
+
+## Performance tip: use `filter` to reduce downloads
+
+> **The SIOPE API returns all municipalities for a given state.**
+> A single call for São Paulo (`state = "SP"`) returns 645+ rows.
+> Use the `filter` parameter to apply **server-side filtering** and
+> download only the data you need. This is much faster than downloading
+> everything and filtering locally with `dplyr::filter()`.
+
+### Filtering by municipality
+
+```{r}
+# SLOW: downloads all 185 municipalities, then filters locally
+dados_pe <- get_siope_general_data(year = 2023, period = 6, state = "PE")
+recife <- dplyr::filter(dados_pe, nom_muni == "Recife")
+
+# FAST: server returns only Recife's data
+recife <- get_siope_general_data(
+  year = 2023, period = 6, state = "PE",
+  filter = "NOM_MUNI eq 'Recife'"
+)
+
+# Filter by IBGE code
+recife <- get_siope_general_data(
+  year = 2023, period = 6, state = "PE",
+  filter = "COD_MUNI eq 261160"
+)
+```
+
+### OData filter syntax
+
+The `filter` parameter uses OData v4 syntax. Column names must use the
+**original API names** (uppercase), not the cleaned snake_case names.
+Use `verbose = TRUE` on a `max_rows = 1` call to inspect column names.
+
+| Operator | Meaning | Example |
+|:---|:---|:---|
+| `eq` | Equals | `"NOM_MUNI eq 'Recife'"` |
+| `ne` | Not equals | `"TIPO ne 'Estado'"` |
+| `gt`, `ge` | Greater (or equal) | `"NUM_POPU gt 100000"` |
+| `lt`, `le` | Less (or equal) | `"NUM_POPU le 50000"` |
+| `and` | Logical AND | `"NOM_MUNI eq 'Recife' and TIPO eq 'Município'"` |
+| `or` | Logical OR | `"NOM_MUNI eq 'Recife' or NOM_MUNI eq 'Olinda'"` |
+| `contains()` | Substring match | `"contains(NOM_MUNI, 'Porto')"` |
+
+### Selecting specific columns
+
+Use `select` to request only the columns you need (reduces payload):
+
+```{r}
+# Only municipality name and declared value
+resumo <- get_siope_expenses(
+  year = 2023, period = 6, state = "PE",
+  select = c("NOM_MUNI", "NOM_ITEM", "VAL_DECL"),
+  filter = "NOM_MUNI eq 'Recife'"
+)
+```
+
+> **Column names in filter/select/orderby must use the original API
+> names (UPPERCASE), not the cleaned snake_case names.** To discover
+> valid column names, run a quick test:
+>
+> ```r
+> sample <- get_siope_expenses(
+>   year = 2023, period = 6, state = "PE", max_rows = 1
+> )
+> # snake_case names → convert back to UPPER for filter/select
+> toupper(names(sample))
+> ```
+
+### Sorting results
+
+```{r}
+# Sort by population descending
+dados <- get_siope_general_data(
+  year = 2023, period = 6, state = "PE",
+  orderby = "NUM_POPU desc", max_rows = 10
+)
+```
+
+### Compensation data with filters
+
+```{r}
+# Staff compensation for Agrestina, only "Efetivo" professionals
+rem <- get_siope_compensation(
+  year = 2024, period = 1, month = 1, state = "PE",
+  filter = "NOM_MUNI eq 'Agrestina' and DS_SITUACAO_PROFISSIONAL eq 'Efetivo'"
+)
+```
+
+## Examples
+
+```{r}
+library(tesouror)
+library(dplyr)
+
+# General data for all municipalities in Pernambuco, last bimester 2023
+dados_pe <- get_siope_general_data(year = 2023, period = 6, state = "PE")
+
+# Education revenues for São Paulo
+receitas_sp <- get_siope_revenues(year = 2023, period = 6, state = "SP")
+
+# Education indicators for Minas Gerais
+indicadores_mg <- get_siope_indicators(year = 2023, period = 6, state = "MG")
+
+# Expenses by function for Rio de Janeiro
+desp_func_rj <- get_siope_expenses_by_function(
+  year = 2023, period = 6, state = "RJ"
+)
+
+# Staff compensation for December 2023 in Bahia
+remuneracao_ba <- get_siope_compensation(
+  year = 2023, period = 6, month = 12, state = "BA"
+)
+```
+
+### Quick test with max_rows
+
+```{r}
+# Grab just 10 rows to inspect the structure
+sample <- get_siope_general_data(
+  year = 2023, period = 6, state = "PE", max_rows = 10
+)
+glimpse(sample)
+```
+
+### Combining states
+
+```{r}
+# Fetch multiple states and combine
+nordeste <- c("AL", "BA", "CE", "MA", "PB", "PE", "PI", "RN", "SE")
+
+indicadores_ne <- purrr::map_dfr(nordeste, function(uf) {
+  get_siope_indicators(year = 2023, period = 6, state = uf)
+})
+```
+
+## How the OData URL works
+
+The SIOPE API uses an OData-style URL pattern different from the other
+APIs in this package. Internally, the package builds URLs like:
+
+```
+{base}/Dados_Gerais_Siope(Ano_Consulta=@Ano_Consulta,Num_Peri=@Num_Peri,Sig_UF=@Sig_UF)
+  ?@Ano_Consulta=2023&@Num_Peri=6&@Sig_UF='PE'&$format=json
+```
+
+where `{base}` is the FNDE/MEC SIOPE OData root, available from
+`tesouror:::siope_base_url()`.
+
+You don't need to worry about this — just pass the parameters and the
+package handles the rest. Use `verbose = TRUE` to see the full URL:
+
+```{r}
+get_siope_general_data(year = 2023, period = 6, state = "PE", verbose = TRUE)
+#> ℹ API call: https://www.fnde.gov.br/olinda-ide/servico/...
+```

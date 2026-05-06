@@ -1,0 +1,223 @@
+---
+title: "RREO longitudinal — handling layout drift across years"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RREO longitudinal — handling layout drift across years}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+## The problem: RREO labels drift across years
+
+The SICONFI RREO is a long table where each row is identified by an
+*appendix* (`no_anexo`), an *account* (`conta`) and a *column*
+(`coluna`). All three drift across fiscal years even when the underlying
+concept stays the same:
+
+* **Appendix renaming.** Federal social-security data on the General
+  Regime (RGPS) lived in `RREO-Anexo 04.3 - RGPS` from 2015 to 2022 and
+  moved to `RREO-Anexo 04.4 - RGPS` from 2023 onwards. RPPS Civis and
+  FCDF moved from Anexo 04.1 to 04.2 in the same reform.
+* **Account-code shuffling.** Account labels carry trailing Roman
+  numerals tied to the appendix layout, so the same indicator appears as
+  `"Resultado Previdenciário RGPS (VII) = (III - VI)"` in one year and
+  as `"Resultado Previdenciário RGPS (V) = (III - IV)"` in another.
+* **Column suffix instability.** A given column shows up as
+  `"DESPESAS LIQUIDADAS ATÉ O BIMESTRE / 2019"` in 2019, then as
+  `"DESPESAS LIQUIDADAS ATÉ O BIMESTRE"` (no year) in 2021–2022, and as
+  `"DESPESAS LIQUIDADAS ATÉ O BIMESTRE / 2023"` in 2023+, with stray
+  whitespace variants such as `"... BIMESTRE/ 2023"` (no space) inside
+  the same year.
+
+Together, these three sources of drift mean that any code that filters
+SICONFI by literal label values ends up with `paste0()` ladders full of
+`ifelse()` to special-case each year. This vignette shows how the helpers
+in **tesouror** turn this into a single function call.
+
+## The bundled layout reference
+
+`rreo_layout()` returns the table in `inst/extdata/rreo_layout.csv` that
+maps `(topic, regime, year_range)` to the correct appendix and to a
+year-stable matching key for the account label.
+
+```{r}
+library(tesouror)
+
+rreo_layout()
+```
+
+```
+#> # A tibble: 7 × 8
+#>   topic        regime     first_year last_year co_esfera no_anexo                conta_match                          indicador
+#>   <chr>        <chr>           <int>     <int> <chr>     <chr>                   <chr>                                <chr>
+#> 1 previdencia  civil_rpps       2015      2022 U         RREO-Anexo 04.1         resultado previdenciario rpps civis  resultado_previdenciario_civil
+#> 2 previdencia  civil_rpps       2023      2099 U         RREO-Anexo 04.2         resultado previdenciario rpps civis  resultado_previdenciario_civil
+#> 3 previdencia  fcdf             2015      2022 U         RREO-Anexo 04.1         resultado previdenciario - fcdf      resultado_previdenciario_fcdf
+#> 4 previdencia  fcdf             2023      2099 U         RREO-Anexo 04.2         resultado previdenciario - fcdf      resultado_previdenciario_fcdf
+#> 5 previdencia  militar          2015      2099 U         RREO-Anexo 04.2         resultado total - militares inativos resultado_militares_inativos
+#> 6 previdencia  rgps             2015      2022 U         RREO-Anexo 04.3 - RGPS  resultado previdenciario rgps        resultado_previdenciario_rgps
+#> 7 previdencia  rgps             2023      2099 U         RREO-Anexo 04.4 - RGPS  resultado previdenciario rgps        resultado_previdenciario_rgps
+```
+
+Use it directly to look up the right appendix when fetching data with
+`get_rreo()`:
+
+```{r}
+layout <- rreo_layout()
+fetch_year <- function(year) {
+  rule <- layout[layout$topic == "previdencia" &
+                 layout$regime == "rgps" &
+                 year >= layout$first_year &
+                 year <= layout$last_year, ]
+  get_rreo(
+    an_exercicio = year, nr_periodo = 6,
+    co_tipo_demonstrativo = "RREO", no_anexo = rule$no_anexo[1],
+    co_esfera = "U", id_ente = 1
+  )
+}
+```
+
+## Step 1 — Normalize column labels
+
+`rreo_normalize_columns()` strips trailing year suffixes (`"/ 2019"`,
+`"/2023"`, `" /2023"`, `"EM 2023"`) and squishes whitespace, exposing
+the year separately so you can distinguish a *current-year* column from
+a *previous-year* comparator.
+
+```{r}
+demo <- tibble::tibble(
+  coluna = c(
+    "DESPESAS LIQUIDADAS ATÉ O BIMESTRE / 2023",
+    "DESPESAS LIQUIDADAS ATÉ O BIMESTRE",
+    "DESPESAS LIQUIDADAS ATÉ O BIMESTRE/ 2018",
+    "INSCRITAS EM RESTOS A PAGAR NÃO PROCESSADOS EM 2023"
+  )
+)
+rreo_normalize_columns(demo)
+```
+
+```
+#> # A tibble: 4 × 3
+#>   coluna                                              coluna_padrao                              coluna_ano
+#>   <chr>                                               <chr>                                           <int>
+#> 1 DESPESAS LIQUIDADAS ATÉ O BIMESTRE / 2023           DESPESAS LIQUIDADAS ATÉ O BIMESTRE               2023
+#> 2 DESPESAS LIQUIDADAS ATÉ O BIMESTRE                  DESPESAS LIQUIDADAS ATÉ O BIMESTRE                 NA
+#> 3 DESPESAS LIQUIDADAS ATÉ O BIMESTRE/ 2018            DESPESAS LIQUIDADAS ATÉ O BIMESTRE               2018
+#> 4 INSCRITAS EM RESTOS A PAGAR NÃO PROCESSADOS EM 2023 INSCRITAS EM RESTOS A PAGAR NÃO PROCESSADOS      2023
+```
+
+## Step 2 — Tidy by topic
+
+`tidy_rreo()` runs `rreo_normalize_columns()` for you and then matches
+each row's `conta` against the year-appropriate rule in `rreo_layout()`.
+Account labels are matched on a stable stem (everything before the first
+`(`, accent-stripped and lowercased), so the shifting Roman numerals do
+not break the join.
+
+```{r}
+library(dplyr)
+
+# Pull the federal RGPS series for five years using the layout
+rgps_raw <- purrr::map_dfr(2019:2023, fetch_year)
+
+rgps_tidy <- rgps_raw |>
+  tidy_rreo(topic = "previdencia", regime = "rgps")
+
+panel <- rgps_tidy |>
+  filter(coluna_padrao == "DESPESAS LIQUIDADAS ATÉ O BIMESTRE",
+         is.na(coluna_ano) | coluna_ano == exercicio) |>
+  select(exercicio, indicador, regime, valor)
+
+panel
+```
+
+```
+#> # A tibble: 5 × 4
+#>   exercicio indicador                     regime    valor
+#>       <int> <chr>                         <chr>     <dbl>
+#> 1      2019 resultado_previdenciario_rgps rgps   -2.13e11
+#> 2      2020 resultado_previdenciario_rgps rgps   -2.61e11
+#> 3      2021 resultado_previdenciario_rgps rgps   -2.48e11
+#> 4      2022 resultado_previdenciario_rgps rgps   -2.67e11
+#> 5      2023 resultado_previdenciario_rgps rgps   -3.13e11
+```
+
+The five-year deficit series of the RGPS, with no manual reconciliation
+of appendix names, account codes, or column suffixes.
+
+## Multi-regime in one call
+
+Drop `regime` to keep every regime registered for the topic at once:
+
+```{r}
+all_topics <- rreo_layout()
+fetch_topic <- function(year, regime) {
+  rules <- all_topics[all_topics$topic == "previdencia" &
+                      all_topics$regime == regime &
+                      year >= all_topics$first_year &
+                      year <= all_topics$last_year, ]
+  if (nrow(rules) == 0L) return(NULL)
+  purrr::map_dfr(unique(rules$no_anexo), \(an) {
+    get_rreo(
+      an_exercicio = year, nr_periodo = 6,
+      co_tipo_demonstrativo = "RREO", no_anexo = an,
+      co_esfera = "U", id_ente = 1
+    )
+  })
+}
+
+regimes <- unique(all_topics$regime[all_topics$topic == "previdencia"])
+raw_22_23 <- purrr::map_dfr(2022:2023, \(yr) {
+  purrr::map_dfr(regimes, \(rg) fetch_topic(yr, rg))
+})
+
+raw_22_23 |>
+  tidy_rreo(topic = "previdencia") |>
+  filter(coluna_padrao == "DESPESAS LIQUIDADAS ATÉ O BIMESTRE",
+         is.na(coluna_ano) | coluna_ano == exercicio) |>
+  select(exercicio, indicador, regime, valor) |>
+  distinct()
+```
+
+```
+#> # A tibble: 7 × 4
+#>   exercicio indicador                      regime        valor
+#>       <int> <chr>                          <chr>         <dbl>
+#> 1      2022 resultado_previdenciario_civil civil_rpps -5.04e10
+#> 2      2023 resultado_previdenciario_civil civil_rpps -5.47e10
+#> 3      2022 resultado_previdenciario_fcdf  fcdf       -6.56e 9
+#> 4      2023 resultado_previdenciario_fcdf  fcdf       -8.03e 9
+#> 5      2022 resultado_militares_inativos   militar    -3.11e10
+#> 6      2022 resultado_previdenciario_rgps  rgps       -2.67e11
+#> 7      2023 resultado_previdenciario_rgps  rgps       -3.13e11
+```
+
+## Adding new topics
+
+`inst/extdata/rreo_layout.csv` is the single source of truth. To extend
+coverage to a new topic — for example, RCL (`Receita Corrente Líquida`)
+or DPF (`Dívida Pública Fundada`) — append rows describing each
+year-range plus the year-stable account stem:
+
+```
+topic,regime,first_year,last_year,co_esfera,no_anexo,conta_match,indicador
+rcl,total,2015,2099,M,RREO-Anexo 03,receita corrente liquida (iv) = (i - ii - iii),rcl_total
+```
+
+The matching key (`conta_match`) is built by lowercasing the account
+label, stripping Latin diacritics, and dropping everything from the
+first `(` onwards. The helper `tesouror:::.clean_conta()` shows the
+exact transformation; running it on a sample row from `get_rreo()` gives
+you the value to put into the CSV.
+
+## See also
+
+* [rsiconfi#4](https://github.com/tchiluanda/rsiconfi/issues/4) — the
+  original issue on the competing `rsiconfi` package describing the
+  problem this layer solves.
+* `?get_rreo`, `?get_rreo_for_state`, `?tidy_rreo`,
+  `?rreo_normalize_columns`, `?rreo_layout`.

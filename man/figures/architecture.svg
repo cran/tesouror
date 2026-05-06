@@ -1,0 +1,1366 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="100%"
+   viewBox="0 0 680 1440"
+   version="1.1"
+   id="svg91"
+   sodipodi:docname="architecture.svg"
+   inkscape:version="1.4 (e7c3feb1, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs91" />
+  <sodipodi:namedview
+     id="namedview91"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="1.1885714"
+     inkscape:cx="356.3101"
+     inkscape:cy="382.849"
+     inkscape:window-width="1456"
+     inkscape:window-height="822"
+     inkscape:window-x="55"
+     inkscape:window-y="31"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg91" />
+  <style
+     id="style1">
+  text { font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Helvetica, Arial, sans-serif; }
+  .th { font-size: 14px; font-weight: 600; }
+  .ts { font-size: 12px; font-weight: 400; fill: #57534e; }
+  .title { font-size: 18px; font-weight: 600; fill: #1c1917; }
+</style>
+  <text
+     class="title"
+     x="340"
+     y="30"
+     text-anchor="middle"
+     id="text1">tesouror — 90 exported functions</text>
+  <text
+     class="ts"
+     x="340"
+     y="50"
+     text-anchor="middle"
+     id="text2">6 APIs · bilingual (PT + EN) · tidy tibble output</text>
+  <!-- ═══ SICONFI ═══ -->
+  <rect
+     x="40"
+     y="75"
+     width="620"
+     height="195"
+     rx="12"
+     fill="#E6F1FB"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect2" />
+  <text
+     class="th"
+     x="60"
+     y="100"
+     fill="#0C447C"
+     id="text3">SICONFI — fiscal reports (27 functions)</text>
+  <text
+     class="ts"
+     x="60"
+     y="118"
+     id="text4">apidatalake.tesouro.gov.br/ords/siconfi/tt/ · ORDS pagination · 5000 rows/page</text>
+  <rect
+     x="55"
+     y="130"
+     width="88"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect4" />
+  <text
+     class="ts"
+     x="99"
+     y="148"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text5">get_entes</text>
+  <rect
+     x="150"
+     y="130"
+     width="93"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect5" />
+  <text
+     class="ts"
+     x="196"
+     y="148"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text6">get_anexos</text>
+  <rect
+     x="250"
+     y="130"
+     width="72"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect6" />
+  <text
+     class="ts"
+     x="286"
+     y="148"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text7">get_dca</text>
+  <rect
+     x="329"
+     y="130"
+     width="88"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect7" />
+  <text
+     class="ts"
+     x="373"
+     y="148"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text8">get_extrato</text>
+  <rect
+     x="424"
+     y="130"
+     width="72"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect8" />
+  <text
+     class="ts"
+     x="460"
+     y="148"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text9">get_rreo</text>
+  <rect
+     x="503"
+     y="130"
+     width="68"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect9" />
+  <text
+     class="ts"
+     x="537"
+     y="148"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text10">get_rgf</text>
+  <rect
+     x="578"
+     y="130"
+     width="74"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect10" />
+  <text
+     class="ts"
+     x="615"
+     y="148"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text11">get_msc_*</text>
+  <rect
+     x="55"
+     y="166"
+     width="95"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect11" />
+  <text
+     class="ts"
+     x="102"
+     y="184"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text12">get_entities</text>
+  <rect
+     x="157"
+     y="166"
+     width="95"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect12" />
+  <text
+     class="ts"
+     x="204"
+     y="184"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text13">get_annexes</text>
+  <rect
+     x="259"
+     y="166"
+     width="148"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect13" />
+  <text
+     class="ts"
+     x="333"
+     y="184"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text14">get_annual_accounts</text>
+  <rect
+     x="414"
+     y="166"
+     width="128"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect14" />
+  <text
+     class="ts"
+     x="478"
+     y="184"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text15">get_budget_report</text>
+  <rect
+     x="549"
+     y="166"
+     width="103"
+     height="28"
+     rx="6"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect15" />
+  <text
+     class="ts"
+     x="600"
+     y="184"
+     text-anchor="middle"
+     fill="#0C447C"
+     id="text16">get_msc_control</text>
+  <!-- SICONFI: batch fetchers (fault-tolerant) + RREO tidy layer -->
+  <rect
+     x="55" y="202" width="160" height="28" rx="6"
+     fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"
+     id="rect_for_state" />
+  <text class="ts" x="135" y="220" text-anchor="middle" fill="#0C447C"
+     id="text_for_state">get_*_for_state (×3)</text>
+  <rect
+     x="222" y="202" width="135" height="28" rx="6"
+     fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"
+     id="rect_tidy_rreo" />
+  <text class="ts" x="289" y="220" text-anchor="middle" fill="#0C447C"
+     id="text_tidy_rreo">tidy_rreo</text>
+  <rect
+     x="364" y="202" width="135" height="28" rx="6"
+     fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"
+     id="rect_rreo_layout" />
+  <text class="ts" x="431" y="220" text-anchor="middle" fill="#0C447C"
+     id="text_rreo_layout">rreo_layout</text>
+  <rect
+     x="506" y="202" width="146" height="28" rx="6"
+     fill="#B5D4F4" stroke="#185FA5" stroke-width="0.5"
+     id="rect_rreo_norm" />
+  <text class="ts" x="579" y="220" text-anchor="middle" fill="#0C447C"
+     id="text_rreo_norm">rreo_normalize_cols</text>
+  <text class="ts" x="60" y="248" fill="#0C447C" id="text_siconfi_note_1">batch helpers loop over a UF's municipalities with attr('failed') / attr('no_data')</text>
+  <text class="ts" x="60" y="263" fill="#0C447C" id="text_siconfi_note_2">tidy layer reconciles RREO label drift across years (inst/extdata/rreo_layout.csv)</text>
+  <!-- ═══ CUSTOS ═══ -->
+  <rect
+     x="40"
+     y="288"
+     width="620"
+     height="150"
+     rx="12"
+     fill="#FAECE7"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect16" />
+  <text
+     class="th"
+     x="60"
+     y="313"
+     fill="#712B13"
+     id="text17">CUSTOS — federal government costs (12 functions)</text>
+  <text
+     class="ts"
+     x="60"
+     y="331"
+     id="text18">apidatalake.tesouro.gov.br/ords/custos/tt/ · ORDS · 1000 rows/page · SIORG auto-padding</text>
+  <rect
+     x="55"
+     y="343"
+     width="145"
+     height="28"
+     rx="6"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect18" />
+  <text
+     class="ts"
+     x="127"
+     y="361"
+     text-anchor="middle"
+     fill="#712B13"
+     id="text19">get_custos_ativo</text>
+  <rect
+     x="207"
+     y="343"
+     width="145"
+     height="28"
+     rx="6"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect19" />
+  <text
+     class="ts"
+     x="279"
+     y="361"
+     text-anchor="middle"
+     fill="#712B13"
+     id="text20">get_custos_inativo</text>
+  <rect
+     x="359"
+     y="343"
+     width="148"
+     height="28"
+     rx="6"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect20" />
+  <text
+     class="ts"
+     x="433"
+     y="361"
+     text-anchor="middle"
+     fill="#712B13"
+     id="text21">get_custos_pension.</text>
+  <rect
+     x="514"
+     y="343"
+     width="138"
+     height="28"
+     rx="6"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect21" />
+  <text
+     class="ts"
+     x="583"
+     y="361"
+     text-anchor="middle"
+     fill="#712B13"
+     id="text22">demais depr. transf.</text>
+  <rect
+     x="55"
+     y="379"
+     width="160"
+     height="28"
+     rx="6"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect22" />
+  <text
+     class="ts"
+     x="135"
+     y="397"
+     text-anchor="middle"
+     fill="#712B13"
+     id="text23">get_costs_active_staff</text>
+  <rect
+     x="222"
+     y="379"
+     width="155"
+     height="28"
+     rx="6"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect23" />
+  <text
+     class="ts"
+     x="299"
+     y="397"
+     text-anchor="middle"
+     fill="#712B13"
+     id="text24">get_costs_retired_staff</text>
+  <rect
+     x="384"
+     y="379"
+     width="148"
+     height="28"
+     rx="6"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect24" />
+  <text
+     class="ts"
+     x="458"
+     y="397"
+     text-anchor="middle"
+     fill="#712B13"
+     id="text25">get_costs_pensioners</text>
+  <rect
+     x="539"
+     y="379"
+     width="113"
+     height="28"
+     rx="6"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect25" />
+  <text
+     class="ts"
+     x="595"
+     y="397"
+     text-anchor="middle"
+     fill="#712B13"
+     id="text26">other depr. transf.</text>
+  <!-- ═══ SADIPEM ═══ -->
+  <rect
+     x="40"
+     y="456"
+     width="620"
+     height="150"
+     rx="12"
+     fill="#E1F5EE"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect26" />
+  <text
+     class="th"
+     x="60"
+     y="481"
+     fill="#085041"
+     id="text27">SADIPEM — public debt (14 functions)</text>
+  <text
+     class="ts"
+     x="60"
+     y="499"
+     id="text28">apidatalake.tesouro.gov.br/ords/sadipem/tt/ · ORDS · 5000 rows/page</text>
+  <rect
+     x="55"
+     y="511"
+     width="78"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect28" />
+  <text
+     class="ts"
+     x="94"
+     y="529"
+     text-anchor="middle"
+     fill="#085041"
+     id="text29">get_pvl</text>
+  <rect
+     x="140"
+     y="511"
+     width="140"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect29" />
+  <text
+     class="ts"
+     x="210"
+     y="529"
+     text-anchor="middle"
+     fill="#085041"
+     id="text30">get_pvl_tramitacao</text>
+  <rect
+     x="287"
+     y="511"
+     width="115"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect30" />
+  <text
+     class="ts"
+     x="344"
+     y="529"
+     text-anchor="middle"
+     fill="#085041"
+     id="text31">get_opc_cron_*</text>
+  <rect
+     x="409"
+     y="511"
+     width="120"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect31" />
+  <text
+     class="ts"
+     x="469"
+     y="529"
+     text-anchor="middle"
+     fill="#085041"
+     id="text32">get_opc_taxa_*</text>
+  <rect
+     x="536"
+     y="511"
+     width="115"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect32" />
+  <text
+     class="ts"
+     x="593"
+     y="529"
+     text-anchor="middle"
+     fill="#085041"
+     id="text33">get_res_cdp +1</text>
+  <rect
+     x="55"
+     y="547"
+     width="140"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect33" />
+  <text
+     class="ts"
+     x="125"
+     y="565"
+     text-anchor="middle"
+     fill="#085041"
+     id="text34">get_debt_requests</text>
+  <rect
+     x="202"
+     y="547"
+     width="120"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect34" />
+  <text
+     class="ts"
+     x="262"
+     y="565"
+     text-anchor="middle"
+     fill="#085041"
+     id="text35">get_pvl_status</text>
+  <rect
+     x="329"
+     y="547"
+     width="155"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect35" />
+  <text
+     class="ts"
+     x="406"
+     y="565"
+     text-anchor="middle"
+     fill="#085041"
+     id="text36">get_credit_release_*</text>
+  <rect
+     x="491"
+     y="547"
+     width="160"
+     height="28"
+     rx="6"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect36" />
+  <text
+     class="ts"
+     x="571"
+     y="565"
+     text-anchor="middle"
+     fill="#085041"
+     id="text37">get_debt_capacity +1</text>
+  <!-- ═══ TRANSFERÊNCIAS ═══ -->
+  <rect
+     x="40"
+     y="624"
+     width="620"
+     height="150"
+     rx="12"
+     fill="#FAEEDA"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect37" />
+  <text
+     class="th"
+     x="60"
+     y="649"
+     fill="#633806"
+     id="text38">Transferências constitucionais (14 functions)</text>
+  <text
+     class="ts"
+     x="60"
+     y="667"
+     id="text39">apiapex.tesouro.gov.br/aria/v1/ · single response · Treasury codes (not IBGE)</text>
+  <rect
+     x="55"
+     y="679"
+     width="125"
+     height="28"
+     rx="6"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect39" />
+  <text
+     class="ts"
+     x="117"
+     y="697"
+     text-anchor="middle"
+     fill="#633806"
+     id="text40">get_tc_estados</text>
+  <rect
+     x="187"
+     y="679"
+     width="145"
+     height="28"
+     rx="6"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect40" />
+  <text
+     class="ts"
+     x="259"
+     y="697"
+     text-anchor="middle"
+     fill="#633806"
+     id="text41">get_tc_municipios</text>
+  <rect
+     x="339"
+     y="679"
+     width="155"
+     height="28"
+     rx="6"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect41" />
+  <text
+     class="ts"
+     x="416"
+     y="697"
+     text-anchor="middle"
+     fill="#633806"
+     id="text42">get_tc_por_estados</text>
+  <rect
+     x="501"
+     y="679"
+     width="150"
+     height="28"
+     rx="6"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect42" />
+  <text
+     class="ts"
+     x="576"
+     y="697"
+     text-anchor="middle"
+     fill="#633806"
+     id="text43">get_tc_por_municipio</text>
+  <rect
+     x="55"
+     y="715"
+     width="120"
+     height="28"
+     rx="6"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect43" />
+  <text
+     class="ts"
+     x="115"
+     y="733"
+     text-anchor="middle"
+     fill="#633806"
+     id="text44">get_tc_states</text>
+  <rect
+     x="182"
+     y="715"
+     width="160"
+     height="28"
+     rx="6"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect44" />
+  <text
+     class="ts"
+     x="262"
+     y="733"
+     text-anchor="middle"
+     fill="#633806"
+     id="text45">get_tc_municipalities</text>
+  <rect
+     x="349"
+     y="715"
+     width="140"
+     height="28"
+     rx="6"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect45" />
+  <text
+     class="ts"
+     x="419"
+     y="733"
+     text-anchor="middle"
+     fill="#633806"
+     id="text46">get_tc_by_state</text>
+  <rect
+     x="496"
+     y="715"
+     width="155"
+     height="28"
+     rx="6"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect46" />
+  <text
+     class="ts"
+     x="573"
+     y="733"
+     text-anchor="middle"
+     fill="#633806"
+     id="text47">get_tc_by_municipality</text>
+  <!-- ═══ SIORG ═══ -->
+  <rect
+     x="40.012592"
+     y="792.013"
+     width="299.97482"
+     height="143.43636"
+     rx="11.998993"
+     fill="#f1efe8"
+     stroke="#5f5e5a"
+     stroke-width="0.5"
+     id="rect47" />
+  <text
+     class="th"
+     x="60"
+     y="817"
+     fill="#444441"
+     id="text48">SIORG — org structure (6 functions)</text>
+  <text
+     class="ts"
+     x="60"
+     y="835"
+     id="text49">estruturaorganizacional.dados.gov.br</text>
+  <text
+     class="ts"
+     x="60"
+     y="851"
+     id="text50">dictionary for CUSTOS org codes</text>
+  <rect
+     x="55"
+     y="862"
+     width="130"
+     height="26"
+     rx="6"
+     fill="#D3D1C7"
+     stroke="#5F5E5A"
+     stroke-width="0.5"
+     id="rect50" />
+  <text
+     class="ts"
+     x="120"
+     y="879"
+     text-anchor="middle"
+     fill="#444441"
+     id="text51">get_siorg_orgaos</text>
+  <rect
+     x="192"
+     y="862"
+     width="140"
+     height="26"
+     rx="6"
+     fill="#D3D1C7"
+     stroke="#5F5E5A"
+     stroke-width="0.5"
+     id="rect51" />
+  <text
+     class="ts"
+     x="262"
+     y="879"
+     text-anchor="middle"
+     fill="#444441"
+     id="text52">get_siorg_estrutura</text>
+  <rect
+     x="55"
+     y="892"
+     width="155"
+     height="26"
+     rx="6"
+     fill="#D3D1C7"
+     stroke="#5F5E5A"
+     stroke-width="0.5"
+     id="rect52" />
+  <text
+     class="ts"
+     x="132"
+     y="909"
+     text-anchor="middle"
+     fill="#444441"
+     id="text53">get_siorg_organizations</text>
+  <rect
+     x="217"
+     y="892"
+     width="115"
+     height="26"
+     rx="6"
+     fill="#D3D1C7"
+     stroke="#5F5E5A"
+     stroke-width="0.5"
+     id="rect53" />
+  <text
+     class="ts"
+     x="274"
+     y="909"
+     text-anchor="middle"
+     fill="#444441"
+     id="text54">get_siorg_unit</text>
+  <!-- Arrow SIORG → CUSTOS going LEFT outside -->
+  <path
+     d="M40 850 L18 850 L18 360 L38 360"
+     fill="none"
+     stroke="#888780"
+     stroke-width="1.2"
+     stroke-dasharray="5 3"
+     id="path54" />
+  <polygon
+     points="38,356 38,364 46,360 "
+     fill="#888780"
+     id="polygon54"
+     transform="translate(-6)" />
+  <text
+     class="ts"
+     x="14"
+     y="600"
+     text-anchor="middle"
+     transform="rotate(-90 14 600)"
+     id="text55">org codes → auto-padded to 6 digits</text>
+  <!-- ═══ SIOPE ═══ -->
+  <rect
+     x="40"
+     y="952"
+     width="620"
+     height="165"
+     rx="12"
+     fill="#eeedfe"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect55" />
+  <text
+     class="th"
+     x="60"
+     y="977"
+     fill="#3c3489"
+     id="text56">SIOPE — education spending, FNDE/MEC (16 functions)</text>
+  <text
+     class="ts"
+     x="60"
+     y="995"
+     id="text57">fnde.gov.br/olinda-ide/.../odata/ · OData $top/$skip · 1000 rows/page</text>
+  <text
+     class="ts"
+     x="60"
+     y="1011"
+     id="text58">supports server-side filter, select, orderby (OData syntax, uppercase column names)</text>
+  <rect
+     x="55"
+     y="1024"
+     width="170"
+     height="28"
+     rx="6"
+     fill="#cecbf6"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect58" />
+  <text
+     class="ts"
+     x="140"
+     y="1042"
+     text-anchor="middle"
+     fill="#3C3489"
+     id="text59">get_siope_dados_gerais</text>
+  <rect
+     x="232"
+     y="1024"
+     width="160"
+     height="28"
+     rx="6"
+     fill="#cecbf6"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect59" />
+  <text
+     class="ts"
+     x="312"
+     y="1042"
+     text-anchor="middle"
+     fill="#3C3489"
+     id="text60">get_siope_responsaveis</text>
+  <rect
+     x="399"
+     y="1024"
+     width="140"
+     height="28"
+     rx="6"
+     fill="#cecbf6"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect60" />
+  <text
+     class="ts"
+     x="469"
+     y="1042"
+     text-anchor="middle"
+     fill="#3C3489"
+     id="text61">get_siope_despesas</text>
+  <rect
+     x="546"
+     y="1024"
+     width="105"
+     height="28"
+     rx="6"
+     fill="#cecbf6"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect61" />
+  <text
+     class="ts"
+     x="598"
+     y="1042"
+     text-anchor="middle"
+     fill="#3C3489"
+     id="text62">receitas +3</text>
+  <rect
+     x="55"
+     y="1060"
+     width="170"
+     height="28"
+     rx="6"
+     fill="#cecbf6"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect62" />
+  <text
+     class="ts"
+     x="140"
+     y="1078"
+     text-anchor="middle"
+     fill="#3C3489"
+     id="text63">get_siope_general_data</text>
+  <rect
+     x="232"
+     y="1060"
+     width="140"
+     height="28"
+     rx="6"
+     fill="#cecbf6"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect63" />
+  <text
+     class="ts"
+     x="302"
+     y="1078"
+     text-anchor="middle"
+     fill="#3C3489"
+     id="text64">get_siope_officials</text>
+  <rect
+     x="379"
+     y="1060"
+     width="140"
+     height="28"
+     rx="6"
+     fill="#cecbf6"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect64" />
+  <text
+     class="ts"
+     x="449"
+     y="1078"
+     text-anchor="middle"
+     fill="#3C3489"
+     id="text65">get_siope_expenses</text>
+  <rect
+     x="526"
+     y="1060"
+     width="125"
+     height="28"
+     rx="6"
+     fill="#cecbf6"
+     stroke="#534ab7"
+     stroke-width="0.5"
+     id="rect65" />
+  <text
+     class="ts"
+     x="588"
+     y="1078"
+     text-anchor="middle"
+     fill="#3C3489"
+     id="text66">revenues +3</text>
+  <!-- ═══ SHARED INFRA ═══ -->
+  <rect
+     x="40"
+     y="1142"
+     width="620"
+     height="130"
+     rx="12"
+     fill="#eaf3de"
+     stroke="#3b6d11"
+     stroke-width="0.5"
+     id="rect66" />
+  <text
+     class="th"
+     x="350"
+     y="1167"
+     text-anchor="middle"
+     fill="#27500a"
+     id="text67">shared infrastructure (R/utils.R)</text>
+  <rect
+     x="55"
+     y="1182"
+     width="112"
+     height="50"
+     rx="6"
+     fill="#c0dd97"
+     stroke="#3b6d11"
+     stroke-width="0.5"
+     id="rect67" />
+  <text
+     class="th"
+     x="111"
+     y="1202"
+     text-anchor="middle"
+     fill="#27500a"
+     id="text68">tnr_request</text>
+  <text
+     class="ts"
+     x="111"
+     y="1220"
+     text-anchor="middle"
+     fill="#3B6D11"
+     id="text69">retry 5× + cache</text>
+  <rect
+     x="176"
+     y="1182"
+     width="112"
+     height="50"
+     rx="6"
+     fill="#c0dd97"
+     stroke="#3b6d11"
+     stroke-width="0.5"
+     id="rect69" />
+  <text
+     class="th"
+     x="232"
+     y="1202"
+     text-anchor="middle"
+     fill="#27500a"
+     id="text70">ords_fetch_all</text>
+  <text
+     class="ts"
+     x="232"
+     y="1220"
+     text-anchor="middle"
+     fill="#3B6D11"
+     id="text71">hasMore / offset</text>
+  <rect
+     x="297"
+     y="1182"
+     width="100"
+     height="50"
+     rx="6"
+     fill="#c0dd97"
+     stroke="#3b6d11"
+     stroke-width="0.5"
+     id="rect71" />
+  <text
+     class="th"
+     x="347"
+     y="1202"
+     text-anchor="middle"
+     fill="#27500a"
+     id="text72">siope_fetch</text>
+  <text
+     class="ts"
+     x="347"
+     y="1220"
+     text-anchor="middle"
+     fill="#3B6D11"
+     id="text73">$top / $skip</text>
+  <rect
+     x="406"
+     y="1182"
+     width="100"
+     height="50"
+     rx="6"
+     fill="#c0dd97"
+     stroke="#3b6d11"
+     stroke-width="0.5"
+     id="rect73" />
+  <text
+     class="th"
+     x="456"
+     y="1202"
+     text-anchor="middle"
+     fill="#27500a"
+     id="text74">is_verbose</text>
+  <text
+     class="ts"
+     x="456"
+     y="1220"
+     text-anchor="middle"
+     fill="#3B6D11"
+     id="text75">global option</text>
+  <rect
+     x="515"
+     y="1182"
+     width="136"
+     height="50"
+     rx="6"
+     fill="#c0dd97"
+     stroke="#3b6d11"
+     stroke-width="0.5"
+     id="rect75" />
+  <text
+     class="th"
+     x="583"
+     y="1202"
+     text-anchor="middle"
+     fill="#27500a"
+     id="text76">cache + helpers</text>
+  <text
+     class="ts"
+     x="583"
+     y="1220"
+     text-anchor="middle"
+     fill="#3B6D11"
+     id="text77">pad_siorg_code</text>
+  <text class="ts" x="350" y="1257" text-anchor="middle" fill="#3B6D11"
+     id="text_extra_infra">+ tnr_loop (fault-tolerant batch helper) · .check_not_uf_abbrev (UF guard)</text>
+  <!-- Arrow APIs → infra -->
+  <!-- ═══ LEGEND ═══ -->
+  <text
+     class="ts"
+     x="40"
+     y="1300"
+     id="text78">Retries: 5×, backoff 3–15s (5xx, 429)</text>
+  <text
+     class="ts"
+     x="40"
+     y="1318"
+     id="text79">HTTP 400: not retried, actionable error message</text>
+  <text
+     class="ts"
+     x="40"
+     y="1336"
+     id="text80">max_rows: caps limit/$top automatically</text>
+  <text
+     class="ts"
+     x="380"
+     y="1300"
+     id="text81">Output: tidy tibbles, janitor::clean_names()</text>
+  <text
+     class="ts"
+     x="380"
+     y="1318"
+     id="text82">verbose: per-call or options(tesouror.verbose)</text>
+  <text
+     class="ts"
+     x="380"
+     y="1336"
+     id="text83">Cache: in-memory, tesouror_clear_cache()</text>
+  <!-- Color legend -->
+  <rect
+     x="40"
+     y="1360"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#B5D4F4"
+     stroke="#185FA5"
+     stroke-width="0.5"
+     id="rect83" />
+  <text
+     class="ts"
+     x="58"
+     y="1371"
+     id="text84">SICONFI</text>
+  <rect
+     x="115"
+     y="1360"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#F5C4B3"
+     stroke="#993C1D"
+     stroke-width="0.5"
+     id="rect84" />
+  <text
+     class="ts"
+     x="133"
+     y="1371"
+     id="text85">CUSTOS</text>
+  <rect
+     x="195"
+     y="1360"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#9FE1CB"
+     stroke="#0F6E56"
+     stroke-width="0.5"
+     id="rect85" />
+  <text
+     class="ts"
+     x="213"
+     y="1371"
+     id="text86">SADIPEM</text>
+  <rect
+     x="275"
+     y="1360"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#FAC775"
+     stroke="#854F0B"
+     stroke-width="0.5"
+     id="rect86" />
+  <text
+     class="ts"
+     x="293"
+     y="1371"
+     id="text87">Transf.</text>
+  <rect
+     x="340"
+     y="1360"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#D3D1C7"
+     stroke="#5F5E5A"
+     stroke-width="0.5"
+     id="rect87" />
+  <text
+     class="ts"
+     x="358"
+     y="1371"
+     id="text88">SIORG</text>
+  <rect
+     x="400"
+     y="1360"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#CECBF6"
+     stroke="#534AB7"
+     stroke-width="0.5"
+     id="rect88" />
+  <text
+     class="ts"
+     x="418"
+     y="1371"
+     id="text89">SIOPE</text>
+  <rect
+     x="460"
+     y="1360"
+     width="12"
+     height="12"
+     rx="2"
+     fill="#C0DD97"
+     stroke="#3B6D11"
+     stroke-width="0.5"
+     id="rect89" />
+  <text
+     class="ts"
+     x="478"
+     y="1371"
+     id="text90">Infra</text>
+  <line
+     x1="40"
+     y1="1390"
+     x2="650"
+     y2="1390"
+     stroke="#D3D1C7"
+     stroke-width="0.5"
+     id="line90" />
+  <text
+     class="ts"
+     x="350"
+     y="1410"
+     text-anchor="middle"
+     id="text91">tesouror 0.2.0 · MIT · pkgdown: strategicprojects.github.io/tesouror</text>
+</svg>

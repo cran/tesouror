@@ -21,6 +21,16 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 # )
 
 ## -----------------------------------------------------------------------------
+# # Federal District constitutional fund (id_ente = 1), RREO-Anexo 04.2 —
+# # only returns rows when co_esfera is NOT passed
+# fcdf <- get_rreo(
+#   an_exercicio = 2023, nr_periodo = 6,
+#   co_tipo_demonstrativo = "RREO",
+#   no_anexo = "RREO-Anexo 04.2",
+#   id_ente = 1
+# )
+
+## -----------------------------------------------------------------------------
 # # RGF Anexo 01 for the executive branch of Tocantins
 # rgf <- get_fiscal_report(
 #   fiscal_year = 2022, periodicity = "Q", period = 3,

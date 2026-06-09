@@ -349,8 +349,12 @@ get_delivery_status <- function(entity_id, year, use_cache = TRUE, verbose = FAL
 #'   simplified reporting.
 #' @param no_anexo Character. Appendix name (e.g., `"RREO-Anexo 01"`).
 #'   **Required**.
-#' @param co_esfera Character. Government sphere: `"M"` (municipalities),
-#'   `"E"` (states), or `"U"` (union). **Required**.
+#' @param co_esfera Character or `NULL`. Government sphere: `"M"`
+#'   (municipalities), `"E"` (states), or `"U"` (union). **Optional** — defaults
+#'   to `NULL`, which omits the `co_esfera` filter from the request. Some
+#'   entities (e.g. the Federal District constitutional fund) only return data
+#'   when the sphere is *not* supplied, so leave this `NULL` if a sphere-filtered
+#'   call comes back empty.
 #' @param id_ente Integer. IBGE code of the entity. **Required**.
 #' @param use_cache Logical. If `TRUE` (default), uses an in-memory cache.
 #'
@@ -381,10 +385,10 @@ get_delivery_status <- function(entity_id, year, use_cache = TRUE, verbose = FAL
 #' )
 #' }
 get_rreo <- function(an_exercicio, nr_periodo, co_tipo_demonstrativo,
-                     no_anexo, co_esfera, id_ente, use_cache = TRUE, verbose = FALSE, page_size = NULL, max_rows = Inf) {
+                     no_anexo, co_esfera = NULL, id_ente, use_cache = TRUE, verbose = FALSE, page_size = NULL, max_rows = Inf) {
   check_required(
     an_exercicio, nr_periodo, co_tipo_demonstrativo,
-    no_anexo, co_esfera, id_ente
+    no_anexo, id_ente
   )
 
   params <- list(
@@ -408,18 +412,19 @@ get_rreo <- function(an_exercicio, nr_periodo, co_tipo_demonstrativo,
 #'   `"RREO Simplificado"`. **Required**. Maps to `co_tipo_demonstrativo`.
 #' @param appendix Character. Appendix name (e.g., `"RREO-Anexo 01"`).
 #'   **Required**. Maps to `no_anexo`.
-#' @param sphere Character. Government sphere: `"M"` (municipalities),
-#'   `"E"` (states), or `"U"` (union). **Required**. Maps to `co_esfera`.
+#' @param sphere Character or `NULL`. Government sphere: `"M"` (municipalities),
+#'   `"E"` (states), or `"U"` (union). **Optional** — defaults to `NULL`, which
+#'   omits the sphere filter. Maps to `co_esfera`.
 #' @param entity_id Integer. IBGE code of the entity. **Required**.
 #'   Maps to `id_ente`.
 #' @usage get_budget_report(fiscal_year, period, report_type, appendix,
-#'   sphere, entity_id, use_cache = TRUE, verbose = FALSE,
+#'   sphere = NULL, entity_id, use_cache = TRUE, verbose = FALSE,
 #'   page_size = NULL, max_rows = Inf)
 #' @export
 get_budget_report <- function(fiscal_year, period, report_type,
-                              appendix, sphere, entity_id,
+                              appendix, sphere = NULL, entity_id,
                               use_cache = TRUE, verbose = FALSE, page_size = NULL, max_rows = Inf) {
-  check_required(fiscal_year, period, report_type, appendix, sphere, entity_id)
+  check_required(fiscal_year, period, report_type, appendix, entity_id)
   get_rreo(
     an_exercicio          = fiscal_year,
     nr_periodo            = period,

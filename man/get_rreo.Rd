@@ -10,7 +10,7 @@ get_rreo(
   nr_periodo,
   co_tipo_demonstrativo,
   no_anexo,
-  co_esfera,
+  co_esfera = NULL,
   id_ente,
   use_cache = TRUE,
   verbose = FALSE,
@@ -19,7 +19,7 @@ get_rreo(
 )
 
 get_budget_report(fiscal_year, period, report_type, appendix,
-  sphere, entity_id, use_cache = TRUE, verbose = FALSE,
+  sphere = NULL, entity_id, use_cache = TRUE, verbose = FALSE,
   page_size = NULL, max_rows = Inf)
 }
 \arguments{
@@ -35,8 +35,12 @@ simplified reporting.}
 \item{no_anexo}{Character. Appendix name (e.g., \code{"RREO-Anexo 01"}).
 \strong{Required}.}
 
-\item{co_esfera}{Character. Government sphere: \code{"M"} (municipalities),
-\code{"E"} (states), or \code{"U"} (union). \strong{Required}.}
+\item{co_esfera}{Character or \code{NULL}. Government sphere: \code{"M"}
+(municipalities), \code{"E"} (states), or \code{"U"} (union). \strong{Optional} — defaults
+to \code{NULL}, which omits the \code{co_esfera} filter from the request. Some
+entities (e.g. the Federal District constitutional fund) only return data
+when the sphere is \emph{not} supplied, so leave this \code{NULL} if a sphere-filtered
+call comes back empty.}
 
 \item{id_ente}{Integer. IBGE code of the entity. \strong{Required}.}
 
@@ -66,8 +70,9 @@ Maps to \code{nr_periodo}.}
 \item{appendix}{Character. Appendix name (e.g., \code{"RREO-Anexo 01"}).
 \strong{Required}. Maps to \code{no_anexo}.}
 
-\item{sphere}{Character. Government sphere: \code{"M"} (municipalities),
-\code{"E"} (states), or \code{"U"} (union). \strong{Required}. Maps to \code{co_esfera}.}
+\item{sphere}{Character or \code{NULL}. Government sphere: \code{"M"} (municipalities),
+\code{"E"} (states), or \code{"U"} (union). \strong{Optional} — defaults to \code{NULL}, which
+omits the sphere filter. Maps to \code{co_esfera}.}
 
 \item{entity_id}{Integer. IBGE code of the entity. \strong{Required}.
 Maps to \code{id_ente}.}
